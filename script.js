@@ -22,28 +22,61 @@ identifiant.addEventListener('input', (e) => {
 	// Fetch all the forms we want to apply custom Bootstrap validation styles to
 	let forms = document.querySelector('.form-validation');
 
-	(function (validateForm) {
-		validateForm.addEventListener(
-			'submit',
-			function (event) {
-				Array.from(forms.elements).forEach((input) => {
-					if (input.type !== 'submit') {
-						if (!validateFiels(input)) {
-							event.preventDefault();
-							event.stopPropagation();
+	forms.addEventListener(
+		'submit',
+		function (event) {
+			Array.from(forms.elements).forEach((input) => {
+				if (input.type !== 'submit') {
+					if (!validateFields(input)) {
+						event.preventDefault();
+						event.stopPropagation();
 
-							input.classList.remove('is-valid');
-							input.classList.add('is-invalid');
-						} else {
-							input.classList.remove('is-invalid');
-							input.classList.add('is-valid');
-						}
+						input.classList.remove('is-valid');
+						input.classList.add('is-invalid');
+						input.nextElementSibling.style.display = 'block';
+					} else {
+						input.nextElementSibling.style.display = 'none';
+						input.classList.remove('is-invalid');
+						input.classList.add('is-valid');
 					}
-				});
-			},
-			false
-		);
-	});
+				}
+			});
+		},
+		false
+	);
 })();
 //?============Déclaration FORM-------END
-// const validIdentifiant = () => {};
+//*============Déclaration FONCTIONS Validation-------START
+// Validation SAISIE
+function validateRequired(input) {
+	return !(input.value == '' || input.value == null);
+}
+// Validation LENGTH
+function validateLength(input, minLength, maxLength) {
+	return !(input.value.length < minLength || input.value.length > maxLength);
+}
+//Validation Txt
+function validateText(input) {
+	return input.value.match('^[A-Za-z]+$');
+}
+
+//*============Déclaration FONCTIONS Validation-------END
+//?============Validation Form--------START
+function validateFields(input) {
+	let fieldname = input.name;
+
+	if (fieldname == 'identifiant') {
+		if (!validateRequired(input)) {
+			return false;
+		}
+
+		if (!validateLength(input, 2, 20)) {
+			return false;
+		}
+
+		if (!validateText(input)) {
+			return false;
+		}
+	}
+}
+//?============Validation Form--------END
