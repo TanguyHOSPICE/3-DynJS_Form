@@ -5,27 +5,68 @@
 -Afin de s'assurer que l'utilisateur ne fasse pas d'erreurs, et que son e-mail puisse être utilisé pour lui envoyer une newsletter, il va falloir mettre en place une vérification sur les adresses e-mails saisies : elles doivent être identiques et remplis par l'utilisateur.
 -Rédigez un code regroupant tous les éléments de réponses des questions précédentes ainsi qu’un événement de type submit afin de valider le formulaire.*/
 let identifiant = document.getElementById('identifiant');
+let password = document.getElementById('password');
+let email = document.getElementById('email');
+let emailConfirmation = document.getElementById('email-confirm');
+let annee = document.getElementById('annee');
+let age = document.getElementById('age');
+let form = document.querySelector('form');
 
-let field = document.querySelectorAll('.field');
-/* 
-identifiant.addEventListener('input', (e) => {
-	if (e.target.value !== '' || e.target.value !== null) {
-		e.preventDefault();
-		field[0].innerHTML += `<p>Il est nécessaire de rentrer un identifiant</p>`;
+let error = '';
+
+function validIdentifiant(value) {
+	if (value === '') {
+		return "l'identifiant est obligatoire\n";
 	}
-}); */
+
+	return '';
+}
+
+function validPassword(value) {
+	if (value.length < 6) {
+		return 'le mot de passe doit contenir au moins 6 caractères\n';
+	}
+
+	return '';
+}
+
+function validEmail(email, emailConfirmation) {
+	if (email !== emailConfirmation) {
+		return 'Les 2 adresses emails doivent être identiques\n';
+	}
+
+	return '';
+}
+
+form.addEventListener('submit', (event) => {
+	error = '';
+	error += validEmail(email.value, emailConfirmation.value);
+	for (let count = 0; count < form.elements.length; count++) {
+		if (form.elements[count].name === 'identifiant') {
+			error += validIdentifiant(form.elements[count].value);
+		} else if (form.elements[count].name === 'password') {
+			error += validPassword(form.elements[count].value);
+		}
+	}
+
+	if (error !== '') {
+		alert(error);
+		event.preventDefault();
+	}
+});
+
 //OU
 //?============Déclaration FORM-------START
-(function () {
+/* (function () {
 	'use strict';
 
 	// Fetch all the forms we want to apply custom Bootstrap validation styles to
-	let forms = document.querySelector('.form-validation');
+	let form = document.querySelector('.form-validation');
 
-	forms.addEventListener(
+	form.addEventListener(
 		'submit',
 		function (event) {
-			Array.from(forms.elements).forEach((input) => {
+			Array.from(form.elements).forEach((input) => {
 				if (input.type !== 'submit') {
 					if (!validateFields(input)) {
 						event.preventDefault();
@@ -55,16 +96,23 @@ function validateRequired(input) {
 function validateLength(input, minLength, maxLength) {
 	return !(input.value.length < minLength || input.value.length > maxLength);
 }
-//Validation Txt
+//Validation TXT
 function validateText(input) {
 	return input.value.match('^[A-Za-z]+$');
 }
+//Validation EMAIL
+function validateEmail(input) {
+	let EMAIL = input.value;
+	let POSAT = EMAIL.indexOf('@');
+	let POSDOT = EMAIL.lastIndexOf('.');
 
+	return !(POSAT < 1 || POSDOT - POSAT < 2);
+}
 //*============Déclaration FONCTIONS Validation-------END
 //?============Validation Form--------START
 function validateFields(input) {
 	let fieldname = input.name;
-
+	//*identifiant
 	if (fieldname == 'identifiant') {
 		if (!validateRequired(input)) {
 			return false;
@@ -77,6 +125,47 @@ function validateFields(input) {
 		if (!validateText(input)) {
 			return false;
 		}
+
+		return true;
+	}
+	//*password
+	if (fieldname == 'password') {
+		if (!validateRequired(input)) {
+			return false;
+		}
+
+		if (!validateLength(input, 6, 15)) {
+			return false;
+		}
+
+		if (!validateText(input)) {
+			return false;
+		}
+
+		return true;
+	}
+	//*email
+	if (fieldname == 'email') {
+		let emailConfirm = document.getElementById('email-confirm');
+		let email = document.getElementById('email');
+		if (!email.value == emailConfirm.value) {
+			return false;
+		}
+
+		if (!validateRequired(input)) {
+			return false;
+		}
+
+		if (!validateEmail(input)) {
+			return false;
+		}
+
+		if (!validateText(input)) {
+			return false;
+		}
+
+		return true;
 	}
 }
 //?============Validation Form--------END
+ */
